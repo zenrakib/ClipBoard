@@ -1,0 +1,30 @@
+# macOS System Files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Xcode and Swift Package Manager
+.build/
+.swiftpm/
+*.xcodeproj
+*.xcworkspace
+*.xcuserstate
+
+# Compiled App Bundle & Release Zips
+ClipBoard.app
+*.zip
+
+# Audio & Video Cache / Scratch
+*.pcm
+*.wav
+*.aiff
+*.m4a
+*.mp4
+node_modules/
+
+# Local User Data
+pinned.json
+Assets/
+run_tests
