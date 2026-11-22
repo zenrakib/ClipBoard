@@ -600,68 +600,32 @@ public struct ClipboardView: View {
     }
 
     private var cardListView: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 6) {
-                    // 1. PINNED SECTION (if any items are pinned)
-                    if !pinnedItems.isEmpty {
-                        HStack(spacing: 5) {
-                            Image(systemName: "pin.fill")
-                                .font(.system(size: 9))
-                            Text("PINNED")
-                                .font(.system(size: 10, weight: .bold))
-                            Spacer()
-                            Text("\(pinnedItems.count)")
-                                .font(.system(size: 9, weight: .semibold, design: .rounded))
-                                .foregroundColor(.white.opacity(0.50))
-                        }
-                        .foregroundColor(fluentAccent)
-                        .padding(.horizontal, 4)
-                        .padding(.top, 4)
-
-                        ForEach(Array(pinnedItems.enumerated()), id: \.element.id) { index, item in
-                            let isSelected = index == state.selectedIndex
-                            ClipboardCardView(
-                                item: item,
-                                isSelected: isSelected,
-                                accentColor: fluentAccent,
-                                onHover: {
-                                    state.selectedIndex = index
-                                },
-                                onTap: {
-                                    onSelect(item)
-                                },
-                                onTogglePin: {
-                                    onTogglePin?(item)
-                                }
-                            )
-                            .id(item.id)
-                        }
-
-                        if !recentItems.isEmpty {
-                            HStack(spacing: 5) {
-                                Image(systemName: "clock")
-                                    .font(.system(size: 9))
-                                Text("RECENT")
-                                    .font(.system(size: 10, weight: .bold))
-                                Spacer()
-                            }
+        ScrollView(.vertical, showsIndicators: true) {
+            LazyVStack(alignment: .leading, spacing: 6) {
+                // 1. PINNED SECTION (if any items are pinned)
+                if !pinnedItems.isEmpty {
+                    HStack(spacing: 5) {
+                        Image(systemName: "pin.fill")
+                            .font(.system(size: 9))
+                        Text("PINNED")
+                            .font(.system(size: 10, weight: .bold))
+                        Spacer()
+                        Text("\(pinnedItems.count)")
+                            .font(.system(size: 9, weight: .semibold, design: .rounded))
                             .foregroundColor(.white.opacity(0.50))
-                            .padding(.horizontal, 4)
-                            .padding(.top, 6)
-                        }
                     }
+                    .foregroundColor(fluentAccent)
+                    .padding(.horizontal, 4)
+                    .padding(.top, 4)
 
-                    // 2. RECENT / UNPINNED ITEMS
-                    ForEach(Array(recentItems.enumerated()), id: \.element.id) { subIndex, item in
-                        let overallIndex = pinnedItems.count + subIndex
-                        let isSelected = overallIndex == state.selectedIndex
+                    ForEach(Array(pinnedItems.enumerated()), id: \.element.id) { index, item in
+                        let isSelected = index == state.selectedIndex
                         ClipboardCardView(
                             item: item,
                             isSelected: isSelected,
                             accentColor: fluentAccent,
                             onHover: {
-                                state.selectedIndex = overallIndex
+                                state.selectedIndex = index
                             },
                             onTap: {
                                 onSelect(item)
@@ -672,17 +636,44 @@ public struct ClipboardView: View {
                         )
                         .id(item.id)
                     }
-                }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-            }
-            .onIndexChange(of: state.selectedIndex) { newIndex in
-                if displayItems.indices.contains(newIndex) {
-                    withAnimation(.easeInOut(duration: 0.08)) {
-                        proxy.scrollTo(displayItems[newIndex].id, anchor: .center)
+
+                    if !recentItems.isEmpty {
+                        HStack(spacing: 5) {
+                            Image(systemName: "clock")
+                                .font(.system(size: 9))
+                            Text("RECENT")
+                                .font(.system(size: 10, weight: .bold))
+                            Spacer()
+                        }
+                        .foregroundColor(.white.opacity(0.50))
+                        .padding(.horizontal, 4)
+                        .padding(.top, 6)
                     }
                 }
+
+                // 2. RECENT / UNPINNED ITEMS
+                ForEach(Array(recentItems.enumerated()), id: \.element.id) { subIndex, item in
+                    let overallIndex = pinnedItems.count + subIndex
+                    let isSelected = overallIndex == state.selectedIndex
+                    ClipboardCardView(
+                        item: item,
+                        isSelected: isSelected,
+                        accentColor: fluentAccent,
+                        onHover: {
+                            state.selectedIndex = overallIndex
+                        },
+                        onTap: {
+                            onSelect(item)
+                        },
+                        onTogglePin: {
+                            onTogglePin?(item)
+                        }
+                    )
+                    .id(item.id)
+                }
             }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
         }
     }
 
@@ -1716,7 +1707,7 @@ struct EmojiPickerView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                ScrollView {
+                ScrollView(.vertical, showsIndicators: true) {
                     LazyVGrid(columns: columns, spacing: 4) {
                         ForEach(activeEmojis, id: \.self) { emoji in
                             EmojiButton(
