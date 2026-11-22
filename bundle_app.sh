@@ -10,8 +10,8 @@ set -euo pipefail
 APP_NAME="ClipBoard"
 APP_BUNDLE="${APP_NAME}.app"
 BUNDLE_ID="com.zenrakib.clipboard"
-VERSION="1.0.0"
-SHORT_VERSION="1.0"
+VERSION="1.0.1"
+SHORT_VERSION="1.0.1"
 MIN_MACOS="13.0"
 
 echo "=================================================="
